@@ -12,13 +12,22 @@ const notes = (await getNotes()).slice(0, 10);
 	<section>
 		<h2 class="section-title">长文</h2>
 		<EssayList essays={essays} />
-		<p class="more"><a href="/essays/">全部长文 →</a></p>
+		{essays.length > 0 && (
+			<p class="more">
+				<a href="/essays/">全部长文 →</a>
+			</p>
+		)}
 	</section>
 
 	<section class="notes">
 		<h2 class="section-title">想法</h2>
+		{notes.length === 0 && <p class="empty">还没有想法。</p>}
 		{notes.map((note) => <NoteItem note={note} />)}
-		<p class="more"><a href="/notes/">全部想法 →</a></p>
+		{notes.length > 0 && (
+			<p class="more">
+				<a href="/notes/">全部想法 →</a>
+			</p>
+		)}
 	</section>
 </Base>
 

@@ -4,11 +4,16 @@ import FormattedDate from './FormattedDate.astro';
 
 interface Props {
 	essays: CollectionEntry<'essays'>[];
+	// 列表为空时显示的一句话。
+	empty?: string;
 }
 
-const { essays } = Astro.props;
+const { essays, empty = '还没有长文。' } = Astro.props;
 ---
 
+{essays.length === 0 ? (
+	<p class="empty">{empty}</p>
+) : (
 <ul class="essay-list">
 	{
 		essays.map((essay) => (
@@ -22,6 +27,7 @@ const { essays } = Astro.props;
 		))
 	}
 </ul>
+)}
 
 <style>
 	.essay-list {
