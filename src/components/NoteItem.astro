@@ -1,0 +1,63 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	note: CollectionEntry<'notes'>;
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+// 想法没有独立页面，只有锚点：/notes/#note-<id>
+const anchor = `note-${note.id}`;
+---
+
+<article class="note" id={anchor}>
+	<a class="note-date" href={`/notes/#${anchor}`}>
+		<FormattedDate date={note.data.date} withTime />
+	</a>
+	<div class="note-body">
+		<Content />
+	</div>
+	{
+		note.data.tags.length > 0 && (
+			<p class="note-tags">
+				{note.data.tags.map((tag) => (
+					<span>#{tag}</span>
+				))}
+			</p>
+		)
+	}
+</article>
+
+<style>
+	.note {
+		margin-bottom: 3em;
+		/* 从别处点锚点跳过来时上面留点余量。 */
+		scroll-margin-top: 2rem;
+	}
+	.note:target .note-date {
+		color: var(--text);
+		font-weight: 600;
+	}
+	.note-date {
+		display: inline-block;
+		margin-bottom: 0.4em;
+		color: var(--muted);
+		text-decoration: none;
+	}
+	.note-date:hover {
+		color: var(--text);
+	}
+	.note-body :global(p:last-child) {
+		margin-bottom: 0;
+	}
+	.note-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4em 1em;
+		margin: 0.6em 0 0;
+		color: var(--muted);
+		font-size: 0.85em;
+	}
+</style>

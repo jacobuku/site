@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths } from 'astro';
+import EssayList from '../../../components/EssayList.astro';
+import TagFilter from '../../../components/TagFilter.astro';
+import Base from '../../../layouts/Base.astro';
+import { getEssayTags, getEssays } from '../../../lib/collections';
+import { assertUniqueSlugs, tagToSlug } from '../../../lib/tags';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const essays = await getEssays();
+	const tags = await getEssayTags();
+
+	assertUniqueSlugs(tags.map(({ tag }) => tag));
+
+	return tags.map(({ tag }) => ({
+		// URL 里是英文 slug，页面上显示的仍是中文 tag。
+		params: { tag: tagToSlug(tag) },
+		props: { tag, essays: essays.filter((essay) => essay.data.tags.includes(tag)) },
+	}));
+};
+
+const { tag, essays } = Astro.props;
+const allTags = await getEssayTags();
+---
+
+<Base title={`#${tag}`} description={`标签 ${tag} 下的长文。`}>
+	<h1>#{tag}</h1>
+	<TagFilter tags={allTags} active={tag} />
+	<EssayList essays={essays} />
+</Base>

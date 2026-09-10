@@ -1,0 +1,15 @@
+---
+import EssayList from '../../components/EssayList.astro';
+import TagFilter from '../../components/TagFilter.astro';
+import Base from '../../layouts/Base.astro';
+import { getEssayTags, getEssays } from '../../lib/collections';
+
+const essays = await getEssays();
+const tags = await getEssayTags();
+---
+
+<Base title="长文" description="全部长文。">
+	<h1>长文</h1>
+	{tags.length > 0 && <TagFilter tags={tags} />}
+	<EssayList essays={essays} />
+</Base>

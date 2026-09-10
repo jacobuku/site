@@ -1,0 +1,42 @@
+---
+import { tagUrl } from '../lib/tags';
+
+interface Props {
+	tags: string[];
+	// 当前正在筛选的 tag，会高亮；不传就都不高亮。
+	active?: string;
+}
+
+const { tags, active } = Astro.props;
+---
+
+<p class="tags">
+	{
+		tags.map((tag) => (
+			<a href={tagUrl(tag)} class:list={['tag', { active: tag === active }]}>
+				#{tag}
+			</a>
+		))
+	}
+</p>
+
+<style>
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4em 1em;
+		margin: 0;
+		font-size: 0.85em;
+	}
+	.tag {
+		color: var(--muted);
+		text-decoration: none;
+	}
+	.tag:hover {
+		color: var(--text);
+	}
+	.tag.active {
+		color: var(--text);
+		font-weight: 600;
+	}
+</style>

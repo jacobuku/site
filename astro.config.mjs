@@ -1,35 +1,26 @@
 // @ts-check
 
-import mdx from '@astrojs/mdx';
+import { satteri } from '@astrojs/markdown-satteri';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
-	integrations: [mdx(), sitemap()],
-	fonts: [
-		{
-			provider: fontProviders.local(),
-			name: 'Atkinson',
-			cssVariable: '--font-atkinson',
-			fallbacks: ['sans-serif'],
-			options: {
-				variants: [
-					{
-						src: ['./src/assets/fonts/atkinson-regular.woff'],
-						weight: 400,
-						style: 'normal',
-						display: 'swap',
+	site: 'https://site.jacobuku.workers.dev',
+	integrations: [sitemap()],
+	markdown: {
+		processor: satteri({
+			features: {
+				gfm: {
+					// 脚注（[^1]）默认就开着，这里只是把给读屏软件的文案换成中文。
+					// 标题 <h2 class="sr-only"> 视觉上不显示，页尾靠一条分隔线区分。
+					// 注意这是全站设置，lang: en 的文章也用这套中文文案。
+					footnotes: {
+						label: '脚注',
+						backLabel: '返回正文引用 {reference}',
 					},
-					{
-						src: ['./src/assets/fonts/atkinson-bold.woff'],
-						weight: 700,
-						style: 'normal',
-						display: 'swap',
-					},
-				],
+				},
 			},
-		},
-	],
+		}),
+	},
 });

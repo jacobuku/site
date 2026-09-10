@@ -4,21 +4,27 @@ import type { HTMLAttributes } from 'astro/types';
 type Props = HTMLAttributes<'a'>;
 
 const { href, class: className, ...props } = Astro.props;
-const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, '');
-const subpath = pathname.match(/[^\/]+/g);
-const isActive = href === pathname || href === '/' + (subpath?.[0] || '');
+
+// 站内链接统一带尾斜杠（避免 Cloudflare 上多一次重定向），
+// 比较时先去掉尾斜杠，再看第一段路径，这样 /essays/xxx/ 也能点亮「长文」。
+const firstSegment = (path: string) => `/${path.split('/').filter(Boolean)[0] ?? ''}`;
+const isActive = firstSegment(Astro.url.pathname) === firstSegment(String(href));
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>
 	<slot />
 </a>
+
 <style>
 	a {
-		display: inline-block;
+		color: var(--muted);
 		text-decoration: none;
 	}
+	a:hover {
+		color: var(--text);
+	}
 	a.active {
-		font-weight: bolder;
-		text-decoration: underline;
+		color: var(--text);
+		font-weight: 600;
 	}
 </style>

@@ -1,17 +1,24 @@
 ---
+import { SITE_TIMEZONE } from '../consts';
+
 interface Props {
 	date: Date;
+	// 想法带时间；长文只到日期。
+	withTime?: boolean;
 }
 
-const { date } = Astro.props;
+const { date, withTime = false } = Astro.props;
+
+// 只有日期的 frontmatter（如 2026-09-09）会被解析成 UTC 零点，所以按 UTC 格式化才不会跑偏一天；
+// 带时间的（想法）按站点时区格式化，跟构建机器的时区无关。
+// sv-SE 的输出就是 YYYY-MM-DD HH:mm。
+const formatted = new Intl.DateTimeFormat('sv-SE', {
+	timeZone: withTime ? SITE_TIMEZONE : 'UTC',
+	year: 'numeric',
+	month: '2-digit',
+	day: '2-digit',
+	...(withTime ? { hour: '2-digit', minute: '2-digit' } : {}),
+}).format(date);
 ---
 
-<time datetime={date.toISOString()}>
-	{
-		date.toLocaleDateString('en-us', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		})
-	}
-</time>
+<time datetime={date.toISOString()}>{formatted}</time>

@@ -1,141 +1,287 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
+/* ---------------------------------------------------------------
+   全站样式。一份文件，没有框架，没有构建期以外的依赖。
+   --------------------------------------------------------------- */
 
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
-		0 16px 32px rgba(var(--gray), 33%);
+	/* 系统字体栈：先交给 system-ui（macOS 上是 San Francisco + 苹方，
+	   Windows 上是 Segoe UI + 微软雅黑，中文会自动落到系统的中文字体），
+	   后面几个是 Linux 等拿不到 system-ui 时的中文兜底。不自托管任何字体。 */
+	--font-sans:
+		system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei',
+		'Noto Sans CJK SC', 'Source Han Sans SC', sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+
+	/* 正文宽度上限。中文全角字符宽，680px 大约是 34 个汉字一行。 */
+	--measure: 680px;
+	--gutter: 1.25rem;
+
+	color-scheme: light dark;
+
+	--bg: #fdfdfc;
+	--text: #23262b;
+	--muted: #6c727c;
+	--rule: #e3e5e8;
+	--link: #1c5c9e;
+	--surface: #f1f2f4;
 }
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #15171a;
+		--text: #d6d9dd;
+		--muted: #8c939d;
+		--rule: #2b2f35;
+		--link: #83b3e8;
+		--surface: #1e2126;
+	}
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+	/* 锚点跳转（想法、脚注）时上面留点余量，别贴着屏幕顶边。 */
+	scroll-padding-top: 2rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
 body {
-	font-family: var(--font-atkinson);
 	margin: 0;
-	padding: 0;
-	text-align: left;
-	background: linear-gradient(var(--gray-gradient)) no-repeat;
-	background-size: 100% 600px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
+	background: var(--bg);
+	color: var(--text);
+	font-family: var(--font-sans);
+	font-size: 18px;
 	line-height: 1.7;
+	overflow-wrap: break-word;
+	text-rendering: optimizeLegibility;
 }
-main {
-	width: 720px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
+
+/* 页头、正文、页脚共用同一条宽度基线，左右才对得齐。
+   必须限定成 body 的直接子元素：文章里的 <header>/<footer> 不能吃到这份内边距，
+   否则标题会比正文多缩进一个 gutter。 */
+body > header,
+body > main,
+body > footer {
+	width: 100%;
+	max-width: var(--measure);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
 }
+
+body > header {
+	padding-top: 2.5rem;
+}
+
+body > main {
+	padding-top: 3rem;
+}
+
+body > footer {
+	margin-top: 5rem;
+	padding-top: 1.5rem;
+	padding-bottom: 4rem;
+	border-top: 1px solid var(--rule);
+	color: var(--muted);
+	font-size: 0.85em;
+}
+
+/* --- 排版 ------------------------------------------------------ */
+
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
-	line-height: 1.2;
+	margin: 2.2em 0 0.6em;
+	line-height: 1.35;
+	font-weight: 600;
+	text-wrap: balance;
 }
+
 h1 {
-	font-size: 3.052em;
+	margin-top: 0;
+	font-size: 1.7em;
 }
+
 h2 {
-	font-size: 2.441em;
+	font-size: 1.28em;
 }
+
 h3 {
-	font-size: 1.953em;
+	font-size: 1.1em;
 }
-h4 {
-	font-size: 1.563em;
+
+h4,
+h5,
+h6 {
+	font-size: 1em;
 }
-h5 {
-	font-size: 1.25em;
+
+p {
+	margin: 0 0 1.4em;
 }
+
+a {
+	color: var(--link);
+	text-underline-offset: 0.18em;
+	text-decoration-thickness: 1px;
+}
+
+a:hover {
+	text-decoration-thickness: 2px;
+}
+
 strong,
 b {
-	font-weight: 700;
+	font-weight: 600;
 }
-a {
-	color: var(--accent);
+
+ul,
+ol {
+	margin: 0 0 1.4em;
+	padding-left: 1.4em;
 }
-a:hover {
-	color: var(--accent);
+
+li {
+	margin-bottom: 0.4em;
 }
-p {
-	margin-bottom: 1em;
+
+blockquote {
+	margin: 1.6em 0;
+	padding-left: 1.1em;
+	border-left: 2px solid var(--rule);
+	color: var(--muted);
 }
-.prose p {
-	margin-bottom: 2em;
+
+hr {
+	margin: 2.5em 0;
+	border: none;
+	border-top: 1px solid var(--rule);
 }
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
-input {
-	font-size: 16px;
-}
-table {
-	width: 100%;
-}
-img {
+
+img,
+video {
 	max-width: 100%;
 	height: auto;
-	border-radius: 8px;
 }
+
 code {
-	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
+	padding: 0.15em 0.35em;
+	background: var(--surface);
+	border-radius: 3px;
+	font-family: var(--font-mono);
+	font-size: 0.88em;
 }
+
 pre {
-	padding: 1.5em;
-	border-radius: 8px;
+	margin: 1.6em 0;
+	padding: 1em 1.1em;
+	background: var(--surface);
+	border-radius: 6px;
+	overflow-x: auto;
+	font-size: 0.88em;
+	line-height: 1.55;
 }
+
 pre > code {
 	all: unset;
+	font-family: var(--font-mono);
 }
-blockquote {
-	border-left: 4px solid var(--accent);
-	padding: 0 0 0 20px;
-	margin: 0;
-	font-size: 1.333em;
+
+table {
+	width: 100%;
+	margin: 1.6em 0;
+	border-collapse: collapse;
+	font-size: 0.95em;
 }
-hr {
-	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
+
+th,
+td {
+	padding: 0.5em 0.6em;
+	border-bottom: 1px solid var(--rule);
+	text-align: left;
 }
-@media (max-width: 720px) {
+
+/* --- 时间戳、标签这类次要信息 ---------------------------------- */
+
+time,
+.muted {
+	color: var(--muted);
+	font-size: 0.85em;
+	font-variant-numeric: tabular-nums;
+}
+
+/* --- 脚注：页尾，跟正文之间用一条分隔线隔开 --------------------
+   标题 <h2 class="sr-only">脚注</h2> 只给读屏软件，视觉上靠分隔线区分。 */
+
+.footnotes {
+	margin-top: 3.5em;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--rule);
+	color: var(--muted);
+	font-size: 0.9em;
+}
+
+.footnotes ol {
+	margin-bottom: 0;
+}
+
+.footnotes li {
+	scroll-margin-top: 2rem;
+}
+
+.footnotes li:target {
+	background: var(--surface);
+}
+
+.footnotes p {
+	margin-bottom: 0.8em;
+}
+
+/* --- 移动端 ---------------------------------------------------- */
+
+@media (max-width: 600px) {
 	body {
-		font-size: 18px;
+		font-size: 17px;
 	}
-	main {
-		padding: 1em;
+
+	body > header {
+		padding-top: 1.75rem;
+	}
+
+	body > main {
+		padding-top: 2rem;
+	}
+
+	h1 {
+		font-size: 1.45em;
+	}
+
+	h2 {
+		font-size: 1.2em;
 	}
 }
 
+/* --- 工具类 ---------------------------------------------------- */
+
 .sr-only {
-	border: 0;
-	padding: 0;
-	margin: 0;
 	position: absolute !important;
-	height: 1px;
 	width: 1px;
+	height: 1px;
+	margin: 0;
+	padding: 0;
+	border: 0;
 	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
-	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
 	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }

@@ -1,0 +1,46 @@
+---
+import { tagUrl } from '../lib/tags';
+
+interface Props {
+	tags: { tag: string; count: number }[];
+	// 当前 tag；不传表示停在 /essays/（「全部」高亮）。
+	active?: string;
+}
+
+const { tags, active } = Astro.props;
+---
+
+<nav class="tag-filter" aria-label="按标签筛选">
+	<a href="/essays/" class:list={{ current: !active }}>全部</a>
+	{
+		tags.map(({ tag, count }) => (
+			<a href={tagUrl(tag)} class:list={{ current: tag === active }}>
+				#{tag} <span class="count">{count}</span>
+			</a>
+		))
+	}
+</nav>
+
+<style>
+	.tag-filter {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5em 1.1em;
+		margin: 0 0 2.5rem;
+		font-size: 0.85em;
+	}
+	.tag-filter a {
+		color: var(--muted);
+		text-decoration: none;
+	}
+	.tag-filter a:hover {
+		color: var(--text);
+	}
+	.tag-filter a.current {
+		color: var(--text);
+		font-weight: 600;
+	}
+	.count {
+		opacity: 0.6;
+	}
+</style>

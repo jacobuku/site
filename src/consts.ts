@@ -1,5 +1,11 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
+// 全站常量。
 
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+// TODO: 换成你的名字 / 站名，全站标题、RSS、页脚都用它。
+export const SITE_TITLE = 'XXX';
+export const SITE_DESCRIPTION = '长文与想法。';
+
+// 站点默认语言（<html lang>）。lang: en 的长文页面会覆盖成 en。
+export const SITE_LANG = 'zh-Hans';
+
+// 显示带时间的时间戳（想法）时使用的时区，与构建机器的时区无关。
+export const SITE_TIMEZONE = 'America/Los_Angeles';

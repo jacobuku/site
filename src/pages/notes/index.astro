@@ -1,0 +1,12 @@
+---
+import NoteItem from '../../components/NoteItem.astro';
+import Base from '../../layouts/Base.astro';
+import { getNotes } from '../../lib/collections';
+
+const notes = await getNotes();
+---
+
+<Base title="想法" description="全部想法，按时间倒序。">
+	<h1>想法</h1>
+	{notes.map((note) => <NoteItem note={note} />)}
+</Base>
