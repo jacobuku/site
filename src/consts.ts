@@ -1,7 +1,7 @@
 // 全站常量。
 
-// TODO: 换成你的名字 / 站名，全站标题、RSS、页脚都用它。
-export const SITE_TITLE = 'XXX';
+// 全站标题、RSS、页脚都用它。
+export const SITE_TITLE = 'Ziko';
 export const SITE_DESCRIPTION = '长文与想法。';
 
 // 站点默认语言（<html lang>）。lang: en 的长文页面会覆盖成 en。
