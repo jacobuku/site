@@ -13,6 +13,7 @@ export const TAG_SLUGS: Record<string, string> = {
 	互联网: 'internet',
 	想法: 'thoughts',
 	草稿: 'draft',
+	炼: 'lian',
 };
 
 const ASCII_TAG = /^[a-zA-Z0-9][a-zA-Z0-9 _-]*$/;
